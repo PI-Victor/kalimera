@@ -39,8 +39,8 @@
 		</ul>
 	</aside>
 
-	<div id="main" class="uk-width-expand uk-padding-remove-left">
-		<div class="uk-container uk-container-expand">
+	<div id="main" class="uk-width-expand uk-height-viewport">
+		<div class="uk-container uk-container-expand uk-height-viewport">
 			<slot />
 		</div>
 	</div>

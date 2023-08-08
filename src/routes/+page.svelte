@@ -2,35 +2,19 @@
 	import { invoke } from '@tauri-apps/api/tauri';
 	import { onMount } from 'svelte';
 
-	import type { StorageBucket } from '../types';
+	import type { StorageBucket, StorageProfile } from '../types';
 	import Toolbar from '../components/toolbar.svelte';
 	import Loading from '../components/loading.svelte';
 
-	let error = null;
+	let error: any;
 	let buckets: StorageBucket[] = [];
 	let selectedBuckets: StorageBucket[] = [];
-	let profiles: any[] = [
-		{
-			name: 'Profile 1'
-		},
-		{
-			name: 'Profile 2'
-		},
-		{
-			name: 'Profile 3'
-		}
-	];
+
+	const profile: StorageProfile = {};
 
 	const listBuckets = async () => {
-		try {
-			buckets = await invoke('list_buckets');
-		} catch (e) {
-			error = e;
-			console.log(error);
-		}
+		buckets = await invoke('list_buckets', { profile });
 	};
-
-	let loadBuckets = listBuckets();
 
 	onMount(async () => {
 		await listBuckets();
@@ -40,7 +24,6 @@
 		const date = new Date(timestamp * 1000);
 		return date.toLocaleString();
 	};
-
 	const updateSelected = (bucket: StorageBucket) => {
 		return (event: any) => {
 			if (event.target.checked) {
@@ -52,6 +35,7 @@
 	};
 </script>
 
+<!-- 
 <div class="uk-position-top-right uk-margin-small-right uk-margin-small-top">
 	<div class="uk-inline">
 		<button
@@ -72,13 +56,13 @@
 			</ul>
 		</div>
 	</div>
-</div>
+</div> -->
 
-<div class="uk-card uk-overflow-auto uk-margin-large-top">
-	{#await loadBuckets}
+<div class="uk-card uk-margin-large-top">
+	{#await listBuckets()}
 		<Loading />
 	{:then}
-		<Toolbar location="buckets" />
+		<Toolbar location="buckets" updateSet={listBuckets} />
 		<table class="uk-table uk-table-striped uk-table-hover uk-table-divider">
 			<thead>
 				<tr>
@@ -96,7 +80,7 @@
 							<input class="uk-checkbox" on:change={updateSelected(bucket)} type="checkbox" />
 						</td>
 						<td class="uk-table-expand uk-text-small">
-							<a id="bucket-table-link" href="/buckets/{bucket.name}">{bucket.name}</a>
+							<a class="uk-text-lowercase" href="/buckets/{bucket.name}">{bucket.name}</a>
 						</td>
 						<td class="uk-table-expand uk-text-center uk-text-small">
 							{convertToLocaleString(bucket.creation_date)}
@@ -110,6 +94,8 @@
 				{/each}
 			</tbody>
 		</table>
+	{:catch error}
+		<p>I got an error: {error}</p>
 	{/await}
 </div>
 

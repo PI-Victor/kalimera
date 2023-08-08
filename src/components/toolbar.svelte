@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let location: string;
+	export let updateSet: (event: any) => void;
 </script>
 
 <div class="uk-flex uk-flex-between">
@@ -34,7 +35,13 @@
 			<a href="#" uk-icon="icon: upload" class="uk-margin-small-right" uk-tooltip="Upload" />
 			<a href="#" uk-icon="icon: download" class="uk-margin-small-right" uk-tooltip="Download" />
 		{/if}
-		<a href="#" uk-icon="icon: refresh" class="uk-margin-small-right" uk-tooltip="Refresh" />
+		<a
+			href="#"
+			uk-icon="icon: refresh"
+			class="uk-margin-small-right"
+			uk-tooltip="Refresh"
+			on:click={updateSet}
+		/>
 	</div>
 	<div>
 		<a href="#" uk-icon="icon: trash" class="uk-text-danger" uk-tooltip="Delete" />

@@ -3,22 +3,23 @@
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
 
-	import type { StorageBucket, StorageObject } from '../../../types';
+	import type { StorageObject, StorageProfile } from '../../../types';
 	import Toolbar from '../../../components/toolbar.svelte';
 	import Loading from '../../../components/loading.svelte';
 
 	let error: any;
 
 	let objects: StorageObject[] = [];
+	let selectedObjects: StorageObject[] = [];
 
 	const { bucket } = $page.params;
+	const profile: StorageProfile = {};
 
 	const listObjects = async () => {
 		try {
-			objects = await invoke('list_objects', { bucket });
+			objects = await invoke('list_objects', { profile, bucket });
 		} catch (e) {
 			error = e;
-			console.log(error);
 		}
 	};
 
@@ -39,13 +40,22 @@
 		size = (size / Math.pow(1024, i)).toFixed(2) * 1;
 		return `${size} ${sizes[i]}`;
 	};
+	const updateSelected = (obj: StorageObject) => {
+		return (event: any) => {
+			if (event.target.checked) {
+				selectedObjects.push(obj);
+			} else {
+				selectedObjects = selectedObjects.filter((b) => b.name !== obj.name);
+			}
+		};
+	};
 </script>
 
-<div class="uk-card uk-overflow-auto uk-margin-large-top">
+<div class="uk-card uk-margin-large-top">
 	{#await loadObjects}
 		<Loading />
 	{:then}
-		<Toolbar location="objects" />
+		<Toolbar location="objects" updateSet={listObjects} />
 		<ul class="uk-breadcrumb">
 			<li>
 				<a href="/buckets/{bucket}" class="uk-text-primary">/{bucket}/</a>
