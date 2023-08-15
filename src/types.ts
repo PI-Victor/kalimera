@@ -16,4 +16,5 @@ export type StorageProfile = {
   forcePathStyle: boolean;
   accessKeyId: string;
   secretAccessKey: string;
+  current: boolean;
 };
