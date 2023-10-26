@@ -1,5 +1,15 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#[cfg(any(
+    target_os = "linux",
+    target_os = "freebsd",
+    target_os = "dragonfly",
+    target_os = "openbsd",
+    target_os = "netbsd"
+))]
+fn set_env_var() {
+    std::env::set_var("WEBKIT_DISABLE_COMPOSITING_MODE", "1");
+}
 
 #[macro_use]
 extern crate ini;
@@ -181,6 +191,7 @@ async fn read_aws_config(config_path: Option<PathBuf>) -> Result<HashMap<String,
 }
 
 fn main() {
+    set_env_var();
     let env_filter = EnvFilter::try_from_env("RUST_LOG").unwrap_or_else(|_| EnvFilter::new("info"));
 
     let subscriber = tracing_subscriber::fmt::Subscriber::builder()
