@@ -41,6 +41,7 @@ struct BucketObject {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 struct Profile {
     name: String,
     region: String,
