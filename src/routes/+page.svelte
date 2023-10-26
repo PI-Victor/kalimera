@@ -10,7 +10,15 @@
 	let buckets: StorageBucket[] = [];
 	let selectedBuckets: StorageBucket[] = [];
 
-	const profile: StorageProfile = {};
+	const profile: StorageProfile = {
+		name: 'scaleway',
+		region: 'fr-par',
+		endpoint: 'https://s3.fr-par.scw.cloud',
+		accessKeyId: '',
+		secretAccessKey: '',
+		forcePathStyle: false,
+		current: true
+	};
 
 	const listBuckets = async () => {
 		buckets = await invoke('list_buckets', { profile });
